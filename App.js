@@ -1,79 +1,68 @@
 import React, { Component } from 'react';
-import { Text, TextInput, View, StyleSheet, WebView } from 'react-native';
+import { Text, View, StyleSheet, WebView } from 'react-native';
 import { Constants, Video } from 'expo';
-import { Header, Button } from 'react-native-elements';
+import { Header } from 'react-native-elements';
+import YTSearch from 'youtube-api-search';
+import SearchBar from './components/SearchBar.js';
+import AppHeader from './components/AppHeader.js';
+import VideoList from './components/VideoList.js';
 
+const API_KEY = 'AIzaSyAdtqCC8Mt9QoPLkDVjTXbYSdyWtnHaT8w'
 
 export default class App extends Component {
 
   state = {
-    term: '2skgKgg4hgg'
+    loading: false,
+    term: '3iB1pZiEjWI',
+    videos: []
   };
+
+  onPressSearch = term => {
+    this.searchYT(term);
+    console.log(term);
+  }
+
+  searchYT = term => {
+    this.setState({ loading: true });
+    YTSearch({key: API_KEY, term }, videos => {
+      console.log(videos);
+      this.setState({ 
+        loading: false,
+        videos: videos
+      });
+    });
+  }
 
   render() {
 
-    const {
-      containerSearch,
-      containerTextStyle,
-      buttonStyle
-    } = styles;
+    const { loading, videos } = this.state;
 
     return (
-      <View style={styles.container}>
-        <Header
-          centerComponent={{ text: 'Ray', style: { color: '#fff' } }}
-          outerContainerStyles={{ backgroundColor: "transparent"}}
+      <View style ={styles.container} >
+        <AppHeader />
+        <SearchBar 
+          loading={loading}
+          onPressSearch={this.onPressSearch}
         />
-        <View style={styles.containerSearch}>
-          <TextInput 
-            style={styles.containerTextStyle}
-            onChangeText={term => this.setState({ term })}
-            value={this.state.term}  
-            placeholder={"youtube search"}
-            placeholderTextColor={"white"}
-          />
-          <Button 
-            buttonStyle={styles.buttonStyle}
-            title="Play"
-            onPress={() => console.log(this.state.term) }
-          />
-        </View>
+        <VideoList videos={videos} />  
         <WebView 
             allowsInlineMediaPlayback={true}
-            style={styles.Videocontainer}
+            // style={styles.Videocontainer}
             javaScriptEnabled={true}
             thirdPartyCookiesEnabled={true}
             originWhitelist={['*']}
             source={{
-              uri: 'https://www.youtube.com/embed/' + this.state.term + '?rel=0&autoplay=0&showinfo=0&controls=0&playsinline=1',
+              uri: 'https://www.youtube.com/watch?v=' + this.state.term + '?rel=0&autoplay=1&showinfo=0&controls=0&playsinline=1',
             }}
-        />
-        <Video
-                 source={{ uri:'https://www.youtube.com/embed/' + this.state.term }}
-                 resizeMode="cover"
-                 style={{ width: 600, height: 300 }}
         />
       </View>
     );
   }
 }
 
-const styles = StyleSheet.create({
+const styles = {
   container: {
     flex: 1,
     backgroundColor: 'black' ,
-  },
-  containerSearch: {
-    flexDirection: 'row',
-    margin: 18
-  },
-  containerTextStyle: {
-    flex: 1,
-    color: 'white',
-    borderColor: 'gray',
-  },
-  buttonStyle: {
-    height: 44,
-    marginBottom: 8
-  },
-});
+  }
+};
