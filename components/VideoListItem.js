@@ -3,7 +3,7 @@ import { View, Text, Image } from 'react-native';
 import { Card } from 'react-native-elements';
 import WatchButton from './WatchButton';
 
-const VideoListItem = ({ video }) => {
+const VideoListItem = ({ video, onWatchPressList }) => {
     const { 
         cardStyle,
         imageStyle,
@@ -32,7 +32,7 @@ const VideoListItem = ({ video }) => {
                     </Text>
                     <WatchButton 
                         videoId={video.id.videoId}  
-                        onWatchPressListItem={video.onWatchPressList}
+                        onWatchPressListItem={onWatchPressList}
                     />
                 </View>
             </Card>

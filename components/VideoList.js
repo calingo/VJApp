@@ -2,12 +2,13 @@ import React from 'react';
 import { ScrollView, View } from 'react-native';
 import VideoListItem from './VideoListItem';
 
-const VideoList = ({ videos }) => {
+const VideoList = ({ videos, onWatchPress }) => {
+ 
     const videoItems = videos.map(video => (
         <VideoListItem
             key={video.etag}
             video={video}
-            onWatchPressList={video.onWatchPress}
+            onWatchPressList={onWatchPress}
         />
     ));
 
